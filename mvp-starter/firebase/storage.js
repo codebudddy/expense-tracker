@@ -15,6 +15,21 @@
  * limitations under the License.
  */
 
+const BUCKET_URL = 'gs://expense-tracker-1c628.appspot.com';
+
 import { format } from 'date-fns';
-import { deleteObject, getDownloadURL as getStorageDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import {
+  deleteObject,
+  getDownloadURL as getStorageDownloadURL,
+  ref,
+  uploadBytes,
+} from 'firebase/storage';
 import { storage } from './firebase';
+
+export async function uploadImage(image, uid) {
+  const formatDate = format(new Date(), "yyyy-MM-dd'T'HH:MM:SS'Z'");
+  const bucket = `${BUCKET_URL}/${uid}/${formatDate}.jgp`;
+  const storageRef = ref(storage, bucket);
+  await uploadBytes(storage, image);
+  return bucket;
+}
